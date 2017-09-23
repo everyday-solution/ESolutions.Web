@@ -10,9 +10,11 @@ base class either with or without the query type.
 Additionally the WebPage class contains a RequestAddOn and a ResponseAddOn that can be used to navigate to the decorated classes. 
 Navigation and queries are created type safe.
 
-'''csharp
-	[ESolutions.Web.UI.PageUrl("~/TestWebPage10.aspx")]
-	public class TestWebPage10 : System.Web.UI.Page
+A short sample
+
+```cs
+	[ESolutions.Web.UI.PageUrl("~/TestWebPage.aspx")]
+	public class TestWebPage : System.Web.UI.Page
 	{
 		[PageQuery]
 		public class Query : ActiveQueryBase<Query>
@@ -35,6 +37,25 @@ Navigation and queries are created type safe.
 			}
 			#endregion
 		}
+		
+		protected void Page_PreRender(Object sender, EventArgs e)
+		{
+		    //Demo for creating typed links
+            this.AnyLink = PageUrlAttribute.Get<TestWebPage>(new TestWebPage.Query()
+            {
+                Id = 55,
+                Text = "My text"
+            });
+            
+            //Demo for accessing url parameters
+            var id = this.RequestAddOn.Query.Id;
+            var text = this.RequestAddOn.Query.Text;
+		}
+		
+		protected void AnyButton_Click(Object sender, EventArgs e)
+		{
+		    //Demo for redirection
+            this.ResponseAddOn.Redirect<YetAnotherPage>();
+		}
 	}
-'''
-
+```
