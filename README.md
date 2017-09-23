@@ -10,7 +10,7 @@ base class either with or without the query type.
 Additionally the WebPage class contains a RequestAddOn and a ResponseAddOn that can be used to navigate to the decorated classes. 
 Navigation and queries are created type safe.
 
-'
+'''csharp
 	[ESolutions.Web.UI.PageUrl("~/TestWebPage10.aspx")]
 	public class TestWebPage10 : System.Web.UI.Page
 	{
@@ -36,5 +36,5 @@ Navigation and queries are created type safe.
 			#endregion
 		}
 	}
-'
+'''
 
