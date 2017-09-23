@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ESolutions.Web.UI;
+
+namespace ESolutions.Web.Tests
+{
+	[ESolutions.Web.UI.PageUrl("~/TestWebPage10.aspx")]
+	public class TestWebPage10 : System.Web.UI.Page
+	{
+		[PageQuery]
+		public class Query : ActiveQueryBase<Query>
+		{
+			#region Id
+			[UrlParameter]
+			public Int32 Id
+			{
+				get;
+				set;
+			}
+			#endregion
+
+			#region Text
+			[UrlParameter]
+			public String Text
+			{
+				get;
+				set;
+			}
+			#endregion
+		}
+	}
+}
