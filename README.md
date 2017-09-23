@@ -14,7 +14,7 @@ A short sample
 
 ```cs
 [ESolutions.Web.UI.PageUrl("~/TestWebPage.aspx")]
-public class TestWebPage : System.Web.UI.Page
+public class TestWebPage : ESolutions.Web.UI.Page<TestWebPage.Query>
 {
 	[PageQuery]
 	public class Query : ActiveQueryBase<Query>
