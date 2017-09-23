@@ -13,49 +13,45 @@ Navigation and queries are created type safe.
 A short sample
 
 ```cs
-	[ESolutions.Web.UI.PageUrl("~/TestWebPage.aspx")]
-	public class TestWebPage : System.Web.UI.Page
+[ESolutions.Web.UI.PageUrl("~/TestWebPage.aspx")]
+public class TestWebPage : System.Web.UI.Page
+{
+	[PageQuery]
+	public class Query : ActiveQueryBase<Query>
 	{
-		[PageQuery]
-		public class Query : ActiveQueryBase<Query>
+		[UrlParameter]
+		public Int32 Id
 		{
-			#region Id
-			[UrlParameter]
-			public Int32 Id
-			{
-				get;
-				set;
-			}
-			#endregion
+			get;
+			set;
+		}
 
-			#region Text
-			[UrlParameter]
-			public String Text
-			{
-				get;
-				set;
-			}
-			#endregion
-		}
-		
-		protected void Page_PreRender(Object sender, EventArgs e)
+		[UrlParameter]
+		public String Text
 		{
-		    //Demo for creating typed links
-            this.AnyLink = PageUrlAttribute.Get<TestWebPage>(new TestWebPage.Query()
-            {
-                Id = 55,
-                Text = "My text"
-            });
-            
-            //Demo for accessing url parameters
-            var id = this.RequestAddOn.Query.Id;
-            var text = this.RequestAddOn.Query.Text;
-		}
-		
-		protected void AnyButton_Click(Object sender, EventArgs e)
-		{
-		    //Demo for redirection
-            this.ResponseAddOn.Redirect<YetAnotherPage>();
+			get;
+			set;
 		}
 	}
+		
+	protected void Page_PreRender(Object sender, EventArgs e)
+	{
+	    //Demo for creating typed links
+	    this.AnyLink = PageUrlAttribute.Get<TestWebPage>(new TestWebPage.Query()
+	    {
+		Id = 55,
+		Text = "My text"
+	    });
+            
+	    //Demo for accessing url parameters
+	    var id = this.RequestAddOn.Query.Id;
+	    var text = this.RequestAddOn.Query.Text;
+	}
+		
+	protected void AnyButton_Click(Object sender, EventArgs e)
+	{
+		//Demo for redirection
+		this.ResponseAddOn.Redirect<YetAnotherPage>();
+	}
+}
 ```
