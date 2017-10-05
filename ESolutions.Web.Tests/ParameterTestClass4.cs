@@ -11,11 +11,12 @@ namespace ESolutions.Web.Tests
 		public enum PageModes
 		{
 			Edit,
-			Create
+			Create,
+			LongEnumValue
 		}
 
 		[UrlParameter]
-		public PageModes Modes
+		public PageModes Mode
 		{
 			get;
 			set;

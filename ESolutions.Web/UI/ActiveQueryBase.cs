@@ -26,20 +26,70 @@ namespace ESolutions.Web.UI
 	{
 		//Delegate
 		#region SerializerDelegate
-		private delegate String SerializerDelegate(PropertyInfo property);
+		private delegate IEnumerable<QueryBrick> SerializerDelegate(PropertyInfo property, Object value);
 		#endregion
 
 		#region DeserializerDelegate
 		private delegate Object DeserializerDelegate(PropertyInfo property, String serializedValue);
 		#endregion
 
+		//Classes
+		#region QueryBrick
+		[System.Diagnostics.DebuggerDisplay("{Name}={Value}")]
+		private class QueryBrick
+		{
+			//Fields
+			#region name
+			private String name = String.Empty;
+			#endregion
+
+			#region value
+			private String value = String.Empty;
+			#endregion
+
+			//Properties
+			#region Name
+			public String Name
+			{
+				get
+				{
+					return HttpUtility.UrlDecode(this.name);
+				}
+				private set
+				{
+					this.name = value;
+				}
+			}
+			#endregion
+
+			#region Value
+			public String Value
+			{
+				get
+				{
+					return HttpUtility.UrlDecode(value);
+				}
+				private set
+				{
+					this.value = value;
+				}
+			}
+			#endregion
+
+			//Constructors
+			#region QueryBrick
+			public QueryBrick(String name, String value)
+			{
+				this.Name = name;
+				this.Value = HttpUtility.UrlEncode(value);
+			}
+			#endregion
+		}
+		#endregion
+
 		//Fields
 		#region serializers
 		private Dictionary<Type, SerializerDelegate> serializers = new Dictionary<Type, SerializerDelegate>();
-		#endregion
-
-		#region defaultSerializer
-		private SerializerDelegate defaultSerializer = null;
 		#endregion
 
 		#region deserializers
@@ -54,7 +104,6 @@ namespace ESolutions.Web.UI
 		#region ActiveQueryBase
 		public ActiveQueryBase()
 		{
-			this.defaultSerializer = this.SerializeString;
 			this.serializers.Add(typeof(DateTime), this.SerializeDateTime);
 			this.serializers.Add(typeof(DateTime?), this.SerializeDateTime);
 			this.serializers.Add(typeof(List<Int32>), this.SerializeListOfInt32);
@@ -77,87 +126,85 @@ namespace ESolutions.Web.UI
 		/// <returns></returns>
 		public String Serialize()
 		{
-			String query = String.Empty;
 			var requiredPropertyInfoList = ActiveQueryBase.GetAllPrivateAndPublicPropertiesDecoratedWithUrlParameter(this.GetType());
 
-			foreach (var currentProperty in requiredPropertyInfoList)
-			{
-				UrlParameterAttribute parameter = ActiveQueryBase.GetUrlParameter(currentProperty);
-				Object value = currentProperty.GetValue(this, null);
+			var queryParts = requiredPropertyInfoList.SelectMany(propertyRunner => this.SerializeSingleProperty(propertyRunner));
 
-				if (value == null && !parameter.IsOptional)
-				{
-					String message = String.Format(
-						ActiveQueryExceptionStrings.ParameterIsNullButNonOptional,
-						currentProperty.Name);
-					throw new ActiveQueryException(message);
-				}
+			var result = queryParts.Any() ?
+				"?" + String.Join("&", queryParts
+					.Select(runner => $"{runner.Name}={runner.Value}")) :
+				String.Empty;
 
-				if (value != null)
-				{
-					query += this.SerializeSingleProperty(currentProperty);
-				}
-			}
-
-			query = query.Trim('&');
-
-			if (!String.IsNullOrEmpty(query))
-			{
-				query = String.Format("?{0}", query);
-			}
-
-			return query;
+			return result;
 		}
 		#endregion
 
 		#region SerializeSingleProperty
-		private String SerializeSingleProperty(PropertyInfo currentProperty)
+		private IEnumerable<QueryBrick> SerializeSingleProperty(PropertyInfo currentProperty)
 		{
-			return
-				this.serializers.ContainsKey(currentProperty.PropertyType) ?
-				this.serializers[currentProperty.PropertyType](currentProperty) :
-				this.defaultSerializer(currentProperty);
+			UrlParameterAttribute parameter = ActiveQueryBase.GetUrlParameter(currentProperty);
+			Object value = currentProperty.GetValue(this, null);
+
+			if (value == null && !parameter.IsOptional)
+			{
+				String message = String.Format(ActiveQueryExceptionStrings.ParameterIsNullButNonOptional, currentProperty.Name);
+				throw new ActiveQueryException(message);
+			}
+
+			IEnumerable<QueryBrick> result = new List<QueryBrick>();
+
+			if (value != null)
+			{
+				if (this.serializers.ContainsKey(currentProperty.PropertyType))
+				{
+					result = this.serializers[currentProperty.PropertyType](currentProperty, value);
+				}
+				else if (currentProperty.PropertyType.IsEnum)
+				{
+					result = this.SerializeEnum(currentProperty, value);
+				}
+				else
+				{
+					result = this.SerializeString(currentProperty, value);
+				}
+			}
+
+			return result;
 		}
 		#endregion
 
 		#region SerializeString
-		private String SerializeString(PropertyInfo property)
+		private IEnumerable<QueryBrick> SerializeString(PropertyInfo property, Object value)
 		{
-			object value = property.GetValue(this, null);
-			return String.Format(
-				"{0}={1}&",
-				property.Name.Underscore(),
-				HttpUtility.UrlEncode(value.ToString()));
+			String name = property.Name.Underscore().ToLower();
+			String stringifiedValue = value.ToString();
+			return new List<QueryBrick>() { new QueryBrick(name, stringifiedValue) };
+		}
+		#endregion
+
+		#region SerializeEnum
+		private IEnumerable<QueryBrick> SerializeEnum(PropertyInfo property, Object value)
+		{
+			String name = property.Name.Underscore().ToLower();
+			String stringifiedValue = HttpUtility.UrlEncode(value.ToString().Underscore());
+			return new List<QueryBrick>() { new QueryBrick(name, stringifiedValue) };
 		}
 		#endregion
 
 		#region SerializeDate
-		private String SerializeDateTime(PropertyInfo property)
+		private IEnumerable<QueryBrick> SerializeDateTime(PropertyInfo property, Object value)
 		{
-			object value = property.GetValue(this, null);
-			return String.Format(
-				"{0}={1}&",
-				property.Name.Underscore(),
-				HttpUtility.UrlEncode(((DateTime)value).ToString("o")));
+			String name = property.Name.Underscore();
+			String stringifiedValue = HttpUtility.UrlEncode(((DateTime)value).ToString("o"));
+			return new List<QueryBrick>() { new QueryBrick(name, stringifiedValue) };
 		}
 		#endregion
 
 		#region SerializeListOfInt32
-		private String SerializeListOfInt32(PropertyInfo property)
+		private IEnumerable<QueryBrick> SerializeListOfInt32(PropertyInfo property, Object value)
 		{
-			String result = String.Empty;
-			object value = property.GetValue(this, null);
 			List<Int32> castedValue = value as List<Int32>;
-
-			foreach (var runner in castedValue)
-			{
-				result += String.Format(
-					"{0}={1}&",
-					property.Name.Underscore(),
-					HttpUtility.UrlEncode(runner.ToString()));
-			}
-
-			return result;
+			return castedValue.Select(runner => new QueryBrick(property.Name.Underscore(), runner.ToString()));
 		}
 		#endregion
 
@@ -182,7 +229,7 @@ namespace ESolutions.Web.UI
 		/// </summary>
 		/// <param name="type">The type.</param>
 		/// <returns></returns>
-		private  static IEnumerable<PropertyInfo> GetAllPrivateAndPublicPropertiesDecoratedWithUrlParameter(Type type)
+		private static IEnumerable<PropertyInfo> GetAllPrivateAndPublicPropertiesDecoratedWithUrlParameter(Type type)
 		{
 			List<PropertyInfo> result = new List<PropertyInfo>();
 
@@ -301,7 +348,7 @@ namespace ESolutions.Web.UI
 					//Now really convert
 					if (conversionType.IsEnum)
 					{
-						result = Enum.Parse(conversionType, value.ToString());
+						result = Enum.Parse(conversionType, value.ToString().Pascalize());
 					}
 					else if (conversionType == typeof(Guid))
 					{

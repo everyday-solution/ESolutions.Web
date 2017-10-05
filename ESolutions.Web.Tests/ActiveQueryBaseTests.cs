@@ -97,28 +97,6 @@ namespace ESolutions.Web.Tests
 		}
 		#endregion
 
-		#region TestThatEnumsCanBeSerializedIfDecoradedWithUrlParameterAttribute
-		[TestMethod]
-		public void TestThatEnumsCanBeSerializedIfDecoradedWithUrlParameterAttribute()
-		{
-			ParameterTestClass4 c = new ParameterTestClass4();
-			c.Modes = ParameterTestClass4.PageModes.Create;
-
-			String result = c.Serialize();
-			Assert.AreEqual("?modes=Create", result);
-		}
-		#endregion
-
-		#region TestThatEnumsCanBeDeserializedIfDecoradedWithUrlParameterAttribute
-		[TestMethod]
-		public void TestThatEnumsCanBeDeserializedIfDecoradedWithUrlParameterAttribute()
-		{
-			System.Web.HttpRequest request = new System.Web.HttpRequest("blah.html", "http://localhost", "modes=Create");
-			ParameterTestClass4 actual = ParameterTestClass4.Deserialize(request);
-
-			Assert.AreEqual(ParameterTestClass4.PageModes.Create, actual.Modes);
-		}
-		#endregion
 
 		#region TestDeserialization
 		[TestMethod]
@@ -127,15 +105,64 @@ namespace ESolutions.Web.Tests
 			ParameterTestClass9 query = new ParameterTestClass9();
 			query.Mode = ParameterTestClass9.EditModes.Create;
 			String requestQuery = query.Serialize();
-			Assert.AreEqual("?mode=Create", requestQuery);
+			Assert.AreEqual("?mode=create", requestQuery);
 
-			System.Web.HttpRequest request = new System.Web.HttpRequest("blah.html", "http://localhost", "mode=Create");
+			System.Web.HttpRequest request = new System.Web.HttpRequest("blah.html", "http://localhost", "mode=create");
 			ParameterTestClass9 actual = ParameterTestClass9.Deserialize(request);
 
 			Assert.IsNull(actual.Manufacturer);
 			Assert.AreEqual(ParameterTestClass9.EditModes.Create, actual.Mode);
 		}
 		#endregion
+
+
+		#region TestThatEnumsCanBeSerializedWithPascalEnum
+		[TestMethod]
+		public void TestThatEnumsCanBeSerializedWithPascalEnum()
+		{
+			ParameterTestClass4 c = new ParameterTestClass4();
+			c.Mode = ParameterTestClass4.PageModes.LongEnumValue;
+
+			String result = c.Serialize();
+			Assert.AreEqual("?mode=long_enum_value", result);
+		}
+		#endregion
+
+
+		#region TestThatEnumsCanBeDeserializedWithPascalEnum
+		[TestMethod]
+		public void TestThatEnumsCanBeDeserializedWithPascalEnum()
+		{
+			System.Web.HttpRequest request = new System.Web.HttpRequest("blah.html", "http://localhost", "mode=long_enum_value");
+			ParameterTestClass4 actual = ParameterTestClass4.Deserialize(request);
+
+			Assert.AreEqual(ParameterTestClass4.PageModes.LongEnumValue, actual.Mode);
+		}
+		#endregion
+
+		#region TestThatEnumsCanBeSerializedIfDecoradedWithUrlParameterAttribute
+		[TestMethod]
+		public void TestThatEnumsCanBeSerializedIfDecoradedWithUrlParameterAttribute()
+		{
+			ParameterTestClass4 c = new ParameterTestClass4();
+			c.Mode = ParameterTestClass4.PageModes.Create;
+
+			String result = c.Serialize();
+			Assert.AreEqual("?mode=create", result);
+		}
+		#endregion
+
+		#region TestThatEnumsCanBeDeserializedIfDecoradedWithUrlParameterAttribute
+		[TestMethod]
+		public void TestThatEnumsCanBeDeserializedIfDecoradedWithUrlParameterAttribute()
+		{
+			System.Web.HttpRequest request = new System.Web.HttpRequest("blah.html", "http://localhost", "mode=create");
+			ParameterTestClass4 actual = ParameterTestClass4.Deserialize(request);
+
+			Assert.AreEqual(ParameterTestClass4.PageModes.Create, actual.Mode);
+		}
+		#endregion
+
 
 		#region TestThatGuidCanBeDeserialized
 		[TestMethod]
@@ -154,6 +181,7 @@ namespace ESolutions.Web.Tests
 		}
 		#endregion
 
+
 		#region TestThatDateTimeIsSerializedWithoutCulture
 		[TestMethod]
 		public void TestThatDateTimeIsSerializedWithoutCulture()
@@ -164,21 +192,6 @@ namespace ESolutions.Web.Tests
 			String queryString = query.Serialize();
 			String expected = String.Format("?time={0}", HttpUtility.UrlEncode(query.Time.ToString("o")));
 			Assert.AreEqual(expected, queryString);
-		}
-		#endregion
-
-		#region TestThatDateTimeCanBeDeserialized
-		[TestMethod]
-		public void TestThatDateTimeCanBeDeserialized()
-		{
-			ParameterTestClass11 expected = new ParameterTestClass11();
-			expected.Time = new DateTime(2014, 12, 31, 1, 2, 3, 4);
-			String queryString = expected.Serialize();
-
-			System.Web.HttpRequest request = new System.Web.HttpRequest("blah.html", "http://localhost", queryString.TrimStart('?'));
-			ParameterTestClass11 actual = ParameterTestClass11.Deserialize(request);
-
-			Assert.AreEqual(expected.Time, actual.Time);
 		}
 		#endregion
 
@@ -204,6 +217,21 @@ namespace ESolutions.Web.Tests
 
 			String queryString = query.Serialize();
 			Assert.AreEqual("", queryString);
+		}
+		#endregion
+
+		#region TestThatDateTimeCanBeDeserialized
+		[TestMethod]
+		public void TestThatDateTimeCanBeDeserialized()
+		{
+			ParameterTestClass11 expected = new ParameterTestClass11();
+			expected.Time = new DateTime(2014, 12, 31, 1, 2, 3, 4);
+			String queryString = expected.Serialize();
+
+			System.Web.HttpRequest request = new System.Web.HttpRequest("blah.html", "http://localhost", queryString.TrimStart('?'));
+			ParameterTestClass11 actual = ParameterTestClass11.Deserialize(request);
+
+			Assert.AreEqual(expected.Time, actual.Time);
 		}
 		#endregion
 
@@ -236,6 +264,7 @@ namespace ESolutions.Web.Tests
 			Assert.AreEqual(expected.Time, actual.Time);
 		}
 		#endregion
+
 
 		#region TestThatListsOfInt32CanBeSerialized
 		[TestMethod]

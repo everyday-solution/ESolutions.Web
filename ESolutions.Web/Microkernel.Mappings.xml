@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<es:mappings
+	targerNamespace="http://everydaysolutions.de/schemas/"
+   xmlns:es="http://everydaysolutions.de/schemas/"
+	es:schemaLocation="es file:///d:/esolutions/esolutions/microkernel.mappings.xsd">
+	<es:typeGroups>
+		<es:typeGroup name="one">
+			<es:types>
+				<es:type interfaceName="ESolutions.Test.IMyMockerClass" multiImplementationKey="test1">
+					<es:desclaringAssembly name="ESolutions.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+					<es:implementingType fullName="ESolutions.Test.MyMockerClass" />
+				</es:type>
+				<es:type interfaceName="ESolutions.Test.IMyMockerClass">
+					<es:desclaringAssembly name="ESolutions.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+					<es:implementingType fullName="ESolutions.Test.MyMockerClass" />
+				</es:type>
+			</es:types>
+		</es:typeGroup>
+		<es:typeGroup name ="two">
+			<es:types>
+				<es:type interfaceName="ESolutions.Test.IMyMockerClass">
+					<es:desclaringAssembly name="ESolutions.Test.Helper, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+					<es:implementingType fullName="ESolutions.Test.MyMockerClass" />
+				</es:type>
+			</es:types>
+		</es:typeGroup>
+	</es:typeGroups>
+	<es:assemblies fallbackPath="d:\test\test\test">
+		<es:assembly name="ESolutions.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" pathToFile="D:\code\ESolutions\ESolutions.Test\bin\Debug\" fileName="ESolutions.Test.dll" />
+		<es:assembly name="ESolutions.Test.Helper, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" pathToFile="D:\code\ESolutions\ESolutions.Test.Helper\bin\Debug\" fileName="ESolutions.Test.Helper.dll" />
+	</es:assemblies>
+</es:mappings>
