@@ -13,10 +13,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("ESolutions.Web")]
 [assembly: AssemblyCopyright("Copyright &copy; Tobias Mundt - everyday Solutions 2014")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("en-US")]
+[assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("2d88d546-991c-4c5e-95b4-5fee333a7b66")]
-[assembly: AssemblyVersion("1.0.1.14")]
-[assembly: AssemblyFileVersion("1.0.1.14")]
+[assembly: AssemblyVersion("1.0.1.15")]
+[assembly: AssemblyFileVersion("1.0.1.15")]
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("ESolutions.Web.Tests")]
