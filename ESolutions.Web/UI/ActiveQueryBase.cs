@@ -51,28 +51,16 @@ namespace ESolutions.Web.UI
 			#region Name
 			public String Name
 			{
-				get
-				{
-					return HttpUtility.UrlDecode(this.name);
-				}
-				private set
-				{
-					this.name = value;
-				}
+				get;
+				private set;
 			}
 			#endregion
 
 			#region Value
 			public String Value
 			{
-				get
-				{
-					return HttpUtility.UrlDecode(value);
-				}
-				private set
-				{
-					this.value = value;
-				}
+				get;
+				private set;
 			}
 			#endregion
 
@@ -128,7 +116,9 @@ namespace ESolutions.Web.UI
 		{
 			var requiredPropertyInfoList = ActiveQueryBase.GetAllPrivateAndPublicPropertiesDecoratedWithUrlParameter(this.GetType());
 
-			var queryParts = requiredPropertyInfoList.SelectMany(propertyRunner => this.SerializeSingleProperty(propertyRunner));
+			var queryParts = requiredPropertyInfoList
+				.SelectMany(propertyRunner => this.SerializeSingleProperty(propertyRunner))
+				.ToList();
 
 			var result = queryParts.Any() ?
 				"?" + String.Join("&", queryParts
@@ -186,7 +176,7 @@ namespace ESolutions.Web.UI
 		private IEnumerable<QueryBrick> SerializeEnum(PropertyInfo property, Object value)
 		{
 			String name = property.Name.Underscore().ToLower();
-			String stringifiedValue = HttpUtility.UrlEncode(value.ToString().Underscore());
+			String stringifiedValue = value.ToString().Underscore();
 			return new List<QueryBrick>() { new QueryBrick(name, stringifiedValue) };
 		}
 		#endregion
@@ -195,7 +185,7 @@ namespace ESolutions.Web.UI
 		private IEnumerable<QueryBrick> SerializeDateTime(PropertyInfo property, Object value)
 		{
 			String name = property.Name.Underscore();
-			String stringifiedValue = HttpUtility.UrlEncode(((DateTime)value).ToString("o"));
+			String stringifiedValue = ((DateTime)value).ToString("o");
 			return new List<QueryBrick>() { new QueryBrick(name, stringifiedValue) };
 		}
 		#endregion
@@ -203,8 +193,9 @@ namespace ESolutions.Web.UI
 		#region SerializeListOfInt32
 		private IEnumerable<QueryBrick> SerializeListOfInt32(PropertyInfo property, Object value)
 		{
+			String name = property.Name.Underscore();
 			List<Int32> castedValue = value as List<Int32>;
-			return castedValue.Select(runner => new QueryBrick(property.Name.Underscore(), runner.ToString()));
+			return castedValue.Select(runner => new QueryBrick(name, runner.ToString()));
 		}
 		#endregion
 
@@ -265,8 +256,9 @@ namespace ESolutions.Web.UI
 
 				foreach (var propertyRunner in propertyInfoList)
 				{
-					String serializedValue = request.Params[propertyRunner.Name.Underscore()];
-					ActiveQueryBase.DeserializeSingleProperty(propertyRunner, serializedValue, result);
+					//CAUTION! params[] automatically calls UrlDecode
+					String decodedValue = request.Params[propertyRunner.Name.Underscore()];
+					ActiveQueryBase.DeserializeSingleProperty(propertyRunner, decodedValue, result);
 				}
 			}
 			catch (Exception ex)

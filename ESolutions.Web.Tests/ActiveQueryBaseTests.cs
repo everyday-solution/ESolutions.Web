@@ -97,7 +97,6 @@ namespace ESolutions.Web.Tests
 		}
 		#endregion
 
-
 		#region TestDeserialization
 		[TestMethod]
 		public void TestDeserialization()
@@ -115,6 +114,23 @@ namespace ESolutions.Web.Tests
 		}
 		#endregion
 
+		#region TestComplexStringsInParameter
+		[TestMethod]
+		public void TestComplexStringsInParameter()
+		{
+			String param = "?sv=2017-04-17&sr=b&sig=r8Q%2FqvCFlnAUUK5xJj4jbaRNhjiLrsZtWvnc9gffIAM%3D&se=2017-11-18T17%3A04%3A09Z&sp=r";
+						    
+			ParameterTestClass6 query = new ParameterTestClass6();
+			query.P1 = param;
+
+			String requestQuery = query.Serialize();
+
+			System.Web.HttpRequest request = new System.Web.HttpRequest("blah.html", "http://localhost", requestQuery.TrimStart('?'));
+			ParameterTestClass6 actual = ParameterTestClass6.Deserialize(request);
+
+			Assert.AreEqual(param, actual.P1);
+		}
+		#endregion
 
 		#region TestThatEnumsCanBeSerializedWithPascalEnum
 		[TestMethod]
@@ -127,7 +143,6 @@ namespace ESolutions.Web.Tests
 			Assert.AreEqual("?mode=long_enum_value", result);
 		}
 		#endregion
-
 
 		#region TestThatEnumsCanBeDeserializedWithPascalEnum
 		[TestMethod]
@@ -163,7 +178,6 @@ namespace ESolutions.Web.Tests
 		}
 		#endregion
 
-
 		#region TestThatGuidCanBeDeserialized
 		[TestMethod]
 		public void TestThatGuidCanBeSeralizedAndDeserialized()
@@ -180,7 +194,6 @@ namespace ESolutions.Web.Tests
 			Assert.AreEqual(query.Guid, new Guid("6490576a-9d7c-4f55-9e85-e886ba427b1c"));
 		}
 		#endregion
-
 
 		#region TestThatDateTimeIsSerializedWithoutCulture
 		[TestMethod]
@@ -264,7 +277,6 @@ namespace ESolutions.Web.Tests
 			Assert.AreEqual(expected.Time, actual.Time);
 		}
 		#endregion
-
 
 		#region TestThatListsOfInt32CanBeSerialized
 		[TestMethod]
