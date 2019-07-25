@@ -88,7 +88,6 @@ namespace ESolutions.Web.UI
 		#region ActiveQueryBase
 		static ActiveQueryBase()
 		{
-			//ActiveQueryBase.defaultDeserializer = ActiveQueryBase.DeserializeString;
 			ActiveQueryBase.deserializers.Add(typeof(List<Int32>), ActiveQueryBase.DeserializeListOfInt32);
 		}
 		#endregion

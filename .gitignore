@@ -41,6 +41,7 @@ TestResult.xml
 
 # NCRUNCH
 *.ncrunchproject
+*.ncrunchsolution.user
 
 # Build Results of an ATL Project
 [Dd]ebugPS/
