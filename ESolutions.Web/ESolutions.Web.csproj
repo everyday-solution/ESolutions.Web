@@ -59,8 +59,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ESolutions, Version=1.8.11.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESolutions.1.8.11\lib\net462\ESolutions.dll</HintPath>
+    <Reference Include="ESolutions, Version=1.8.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESolutions.1.8.18\lib\net462\ESolutions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

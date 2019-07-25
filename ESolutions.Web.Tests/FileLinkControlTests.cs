@@ -44,28 +44,6 @@ namespace ESolutions.Web.Tests
 		}
 		#endregion
 
-		#region Additional test attributes
-		//
-		// You can use the following additional attributes as you write your tests:
-		//
-		// Use ClassInitialize to run code before running the first test in the class
-		// [ClassInitialize()]
-		// public static void MyClassInitialize(TestContext testContext) { }
-		//
-		// Use ClassCleanup to run code after all tests in a class have run
-		// [ClassCleanup()]
-		// public static void MyClassCleanup() { }
-		//
-		// Use TestInitialize to run code before running each test 
-		// [TestInitialize()]
-		// public void MyTestInitialize() { }
-		//
-		// Use TestCleanup to run code after each test has run
-		// [TestCleanup()]
-		// public void MyTestCleanup() { }
-		//
-		#endregion
-
 		#region TestThatCSSLinkIsGeneratedCorrectly
 		[TestMethod]
 		public void TestThatCSSLinkIsGeneratedCorrectly()
@@ -79,6 +57,25 @@ namespace ESolutions.Web.Tests
 			control.File = "~/Common.css";
 			control.RenderControl(htmlWriter);
 			Assert.AreEqual(@"<link href=""~/Common.css"" rel=""stylesheet"" type=""text/css"" />", htmlWriter.InnerWriter.ToString());
+		}
+		#endregion
+
+		#region TestThatCSSLinkWithInvalidationIsGeneratedCorrectly
+		[TestMethod]
+		public void TestThatCSSLinkWithInvalidationIsGeneratedCorrectly()
+		{
+			System.IO.TextWriter writer = new System.IO.StringWriter();
+			System.Web.UI.HtmlTextWriter htmlWriter = new System.Web.UI.HtmlTextWriter(writer);
+
+			System.Web.UI.Page page = new System.Web.UI.Page();
+			FileLinkControl control = new FileLinkControl();
+			page.Controls.Add(control);
+			control.File = "~/Common.css";
+			control.AutoInvalidate = true;
+			control.RenderControl(htmlWriter);
+			var result = htmlWriter.InnerWriter.ToString();
+			Assert.IsTrue(result.StartsWith(@"<link href=""~/Common.css?version="));
+			Assert.IsTrue(result.EndsWith(@""" rel=""stylesheet"" type=""text/css"" />"));
 		}
 		#endregion
 

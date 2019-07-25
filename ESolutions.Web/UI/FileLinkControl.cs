@@ -29,13 +29,37 @@ namespace ESolutions.Web.UI
 		{
 			get
 			{
-				String value = (String)ViewState["File"];
-				return ((value == null) ? String.Empty : value);
+				var value = (String)this.ViewState[nameof(File)];
+				return value ?? String.Empty;
 			}
-
 			set
 			{
-				ViewState["File"] = value;
+				this.ViewState[nameof(File)] = value;
+			}
+		}
+		#endregion
+
+		#region File
+		/// <summary>
+		/// Gets or sets a value indicating whether to automatic invalidate the linked file.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if linked file is automatically invalidate; otherwise, <c>false</c>.
+		/// </value>
+		[Bindable(true)]
+		[Category("Appearance")]
+		[DefaultValue("")]
+		[Localizable(true)]
+		public Boolean AutoInvalidate
+		{
+			get
+			{
+				Boolean? value = (Boolean?)this.ViewState[nameof(AutoInvalidate)];
+				return value ?? false;
+			}
+			set
+			{
+				this.ViewState[nameof(AutoInvalidate)] = value;
 			}
 		}
 		#endregion
@@ -47,7 +71,7 @@ namespace ESolutions.Web.UI
 			if (this.File.EndsWith(".css"))
 			{
 				output.WriteBeginTag("link");
-				output.WriteAttribute("href", this.Page.ResolveUrl(this.File));
+				output.WriteAttribute("href", this.Page.ResolveUrl(this.File) + this.RenderInvalidationToken());
 				output.WriteAttribute("rel", "stylesheet");
 				output.WriteAttribute("type", "text/css");
 				output.Write(HtmlTextWriter.SelfClosingTagEnd);
@@ -55,7 +79,7 @@ namespace ESolutions.Web.UI
 			else if (this.File.EndsWith(".ico"))
 			{
 				output.WriteBeginTag("link");
-				output.WriteAttribute("href", this.Page.ResolveUrl(this.File));
+				output.WriteAttribute("href", this.Page.ResolveUrl(this.File) + this.RenderInvalidationToken());
 				output.WriteAttribute("rel", "shortcut icon");
 				output.WriteAttribute("type", "image/x-icon");
 				output.Write(HtmlTextWriter.SelfClosingTagEnd);
@@ -63,11 +87,20 @@ namespace ESolutions.Web.UI
 			else
 			{
 				output.WriteBeginTag("script");
-				output.WriteAttribute("src", this.Page.ResolveUrl(this.File));
+				output.WriteAttribute("src", this.Page.ResolveUrl(this.File) + this.RenderInvalidationToken());
 				output.WriteAttribute("type", "text/javascript");
 				output.Write(HtmlTextWriter.TagRightChar);
 				output.WriteEndTag("script");
 			}
+		}
+		#endregion
+
+		#region RenderInvalidationToken
+		private String RenderInvalidationToken()
+		{
+			return this.AutoInvalidate ?
+				$"?version={DateTime.UtcNow.Ticks}" :
+				String.Empty;
 		}
 		#endregion
 

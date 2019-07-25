@@ -38,15 +38,6 @@ namespace ESolutions.Web.UI
 		[System.Diagnostics.DebuggerDisplay("{Name}={Value}")]
 		private class QueryBrick
 		{
-			//Fields
-			#region name
-			private String name = String.Empty;
-			#endregion
-
-			#region value
-			private String value = String.Empty;
-			#endregion
-
 			//Properties
 			#region Name
 			public String Name
@@ -77,15 +68,11 @@ namespace ESolutions.Web.UI
 
 		//Fields
 		#region serializers
-		private Dictionary<Type, SerializerDelegate> serializers = new Dictionary<Type, SerializerDelegate>();
+		private readonly Dictionary<Type, SerializerDelegate> serializers = new Dictionary<Type, SerializerDelegate>();
 		#endregion
 
 		#region deserializers
-		private static Dictionary<Type, DeserializerDelegate> deserializers = new Dictionary<Type, DeserializerDelegate>();
-		#endregion
-
-		#region defaultDeserializer
-		private static DeserializerDelegate defaultDeserializer = null;
+		private static readonly Dictionary<Type, DeserializerDelegate> deserializers = new Dictionary<Type, DeserializerDelegate>();
 		#endregion
 
 		//Constructors
@@ -101,7 +88,7 @@ namespace ESolutions.Web.UI
 		#region ActiveQueryBase
 		static ActiveQueryBase()
 		{
-			ActiveQueryBase.defaultDeserializer = ActiveQueryBase.DeserializeString;
+			//ActiveQueryBase.defaultDeserializer = ActiveQueryBase.DeserializeString;
 			ActiveQueryBase.deserializers.Add(typeof(List<Int32>), ActiveQueryBase.DeserializeListOfInt32);
 		}
 		#endregion
