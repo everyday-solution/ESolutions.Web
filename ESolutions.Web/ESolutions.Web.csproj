@@ -82,6 +82,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\RepeaterItemEventArgsBase.cs" />
     <Compile Include="UI\ControlExtender.cs" />
     <Compile Include="HttpResponseWrapper.cs" />
     <Compile Include="IRandomizer.cs" />

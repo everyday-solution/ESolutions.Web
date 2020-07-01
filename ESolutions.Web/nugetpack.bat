@@ -1,0 +1,1 @@
+nuget.exe pack ESolutions.Web.csproj -Prop Configuration=Release
