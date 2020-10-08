@@ -83,6 +83,7 @@
     <Compile Include="ParameterTestClass13.cs" />
     <Compile Include="ParameterTestClass12.cs" />
     <Compile Include="ParameterTestClass11.cs" />
+    <Compile Include="RepeaterItemEventArgsBaseTests.cs" />
     <Compile Include="TestWebPage10.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

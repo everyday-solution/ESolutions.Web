@@ -35,7 +35,7 @@ namespace ESolutions.Web.UI
 		#endregion
 
 		//Methods
-		#region GetPropertyName
+		#region GetControl
 		public ControlType GetControl<ControlType>([CallerMemberName] String caller = null)
 			where ControlType: System.Web.UI.Control
 		{
