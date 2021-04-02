@@ -15,6 +15,17 @@ namespace ESolutions.Web.UI
 		public RepeaterItemEventArgsBase(RepeaterItemEventArgs item)
 		{
 			this.item = item;
+
+			var getControlMethod = this.GetType().GetMethod(nameof(this.GetControl));
+			this.GetType()
+				.GetFields()
+				.Where(runner => runner.GetValue(this) == null)
+				.ToList()
+				.ForEach(runner => {
+					var genericGetControlMethod = getControlMethod.MakeGenericMethod(runner.FieldType);
+					var instance = genericGetControlMethod.Invoke(this, new[] { runner.Name });
+					runner.SetValue(this, instance);
+				});
 		}
 		#endregion
 
@@ -37,7 +48,7 @@ namespace ESolutions.Web.UI
 		//Methods
 		#region GetControl
 		public ControlType GetControl<ControlType>([CallerMemberName] String caller = null)
-			where ControlType: System.Web.UI.Control
+			where ControlType : System.Web.UI.Control
 		{
 			return this.item.Item.FindControl(caller) as ControlType;
 		}

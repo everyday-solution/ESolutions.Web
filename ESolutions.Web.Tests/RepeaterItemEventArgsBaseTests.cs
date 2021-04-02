@@ -14,7 +14,7 @@ namespace ESolutions.Web.Tests
 		public String TestProperty { get; set; }
 	}
 
-	class TestEventArgs : RepeaterItemEventArgsBase<EventArgs>
+	class TestEventArgs : RepeaterItemEventArgsBase<TestData>
 	{
 		#region TestEventArgs
 		public TestEventArgs(RepeaterItemEventArgs item) : base(item)
@@ -23,13 +23,11 @@ namespace ESolutions.Web.Tests
 		#endregion
 
 		#region TestLiteral
-		public Literal TestLiteral
-		{
-			get
-			{
-				return this.GetControl<Literal>();
-			}
-		}
+		public Literal TestLiteral => this.GetControl<Literal>();
+		#endregion
+
+		#region TestLiteralNull
+		public Literal TestLiteralNull = null;
 		#endregion
 	}
 
@@ -41,17 +39,18 @@ namespace ESolutions.Web.Tests
 		public void GetControlTest()
 		{
 			var testString = "test string";
-			var literal = new Literal()
-			{
-				ID = nameof(TestEventArgs.TestLiteral),
-				Text = "test string"
-			};
-			var item = new RepeaterItem(0, ListItemType.Item);
-			item.Controls.Add(literal);
-			var eventArgs = new RepeaterItemEventArgs(item);
+			var testData = new TestData() { TestProperty = "HALLO" };
+
+			var repeaterItem = new RepeaterItem(0, ListItemType.Item) { DataItem = testData };
+			repeaterItem.Controls.Add(new Literal() { ID = nameof(TestEventArgs.TestLiteral), Text = testString });
+			repeaterItem.Controls.Add(new Literal() { ID = nameof(TestEventArgs.TestLiteralNull), Text = testString });
+			var eventArgs = new RepeaterItemEventArgs(repeaterItem);
+
 			var wrappedEventArgs = new TestEventArgs(eventArgs);
 
 			Assert.AreEqual(testString, wrappedEventArgs.TestLiteral.Text);
+			Assert.AreEqual(testString, wrappedEventArgs.TestLiteralNull.Text);
+			Assert.AreEqual(testData, wrappedEventArgs.Data);
 		}
 		#endregion
 	}
