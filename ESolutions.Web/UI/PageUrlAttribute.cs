@@ -111,6 +111,19 @@ namespace ESolutions.Web.UI
 		}
 		#endregion
 
+		#region GetPath
+		/// <summary>
+		/// Return the URL assigned to the page by the PageUrl-Attribute
+		/// </summary>
+		/// <typeparam name="GotoPage"></typeparam>
+		/// <returns></returns>
+		public static String GetPath<MasterPageType>()
+			where MasterPageType : System.Web.UI.MasterPage
+		{
+			return PageUrlAttribute.Get(typeof(MasterPageType));
+		}
+		#endregion
+
 		#region GetAbsolute
 		public static String GetAbsolute<GotoPage>(System.Web.UI.Page currentPage)
 			where GotoPage : System.Web.UI.Page
