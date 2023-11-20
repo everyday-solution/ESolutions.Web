@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Web;
+using System.ComponentModel;
 
 namespace ESolutions.Web.Tests
 {
@@ -233,6 +234,24 @@ namespace ESolutions.Web.Tests
 		}
 		#endregion
 
+		#region TestThatDateTimeUtcIsSerialized
+		[TestMethod]
+		public void TestThatDateTimeUtcIsSerialized()
+		{
+			var zoneName = "W. Europe Standard Time";
+			var sourceTimeZone = TimeZoneInfo.FindSystemTimeZoneById(zoneName);
+			var timeLocal = new DateTime(2023, 11, 20, 0, 0, 0);
+			var timeUtc = TimeZoneInfo.ConvertTimeToUtc(timeLocal, sourceTimeZone);
+
+			var query = new ParameterTestClass11();
+			query.Time = timeUtc;
+
+			String queryString = query.Serialize();
+			String expected = String.Format("?time={0}", HttpUtility.UrlEncode(query.Time.ToString("o")));
+			Assert.AreEqual(expected, queryString);
+		}
+		#endregion
+
 		#region TestThatDateTimeCanBeDeserialized
 		[TestMethod]
 		public void TestThatDateTimeCanBeDeserialized()
@@ -275,6 +294,26 @@ namespace ESolutions.Web.Tests
 			ParameterTestClass12 actual = ParameterTestClass12.Deserialize(request);
 
 			Assert.AreEqual(expected.Time, actual.Time);
+		}
+		#endregion
+
+		#region TestThatDateTimeUtcIsDeserialized
+		[TestMethod]
+		public void TestThatDateTimeUtcIsDeserialized()
+		{
+			var zoneName = "W. Europe Standard Time";
+			var sourceTimeZone = TimeZoneInfo.FindSystemTimeZoneById(zoneName);
+			var timeLocal = new DateTime(2023, 11, 20, 0, 0, 0);
+			var timeUtc = TimeZoneInfo.ConvertTimeToUtc(timeLocal, sourceTimeZone);
+
+			var query = new ParameterTestClass11();
+			query.Time = timeUtc;
+			var queryString = query.Serialize();
+
+			System.Web.HttpRequest request = new System.Web.HttpRequest("blah.html", "http://localhost", queryString.TrimStart('?'));
+			ParameterTestClass11 actual = ParameterTestClass11.Deserialize(request);
+
+			Assert.AreEqual(query.Time, actual.Time);
 		}
 		#endregion
 

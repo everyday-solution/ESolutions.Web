@@ -334,7 +334,8 @@ namespace ESolutions.Web.UI
 					}
 					else if (conversionType == typeof(DateTime) || conversionType == typeof(DateTime?))
 					{
-						result = DateTime.Parse(value.ToString(), CultureInfo.InvariantCulture);
+						//result = DateTime.Parse(value.ToString(), CultureInfo.InvariantCulture);
+						result = DateTime.Parse(value.ToString(), null, System.Globalization.DateTimeStyles.RoundtripKind);
 					}
 					else
 					{
