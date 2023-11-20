@@ -13,10 +13,11 @@
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
 		<releaseNotes></releaseNotes>
-		<copyright>Copyright 2020</copyright>
+		<copyright>Copyright 2023</copyright>
 		<tags>asp net webforms url masterpage</tags>
 		<dependencies>
-			<group targetFramework=".NETFramework4.6.2" />
+			<group targetFramework=".net48">
+			</group>
 		</dependencies>
 	</metadata>
 	<files>

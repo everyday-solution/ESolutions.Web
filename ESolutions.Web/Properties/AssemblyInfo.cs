@@ -11,12 +11,12 @@ using System.Runtime.InteropServices;
 #endif
 [assembly: AssemblyCompany("Tobias Mundt - everyday Solutions")]
 [assembly: AssemblyProduct("ESolutions.Web")]
-[assembly: AssemblyCopyright("Copyright &copy; Tobias Mundt - everyday Solutions 2020")]
+[assembly: AssemblyCopyright("Copyright &copy; Tobias Mundt - everyday Solutions 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("2d88d546-991c-4c5e-95b4-5fee333a7b66")]
-[assembly: AssemblyVersion("1.0.1.21")]
-[assembly: AssemblyFileVersion("1.0.1.21")]
+[assembly: AssemblyVersion("1.0.1.22")]
+[assembly: AssemblyFileVersion("1.0.1.22")]
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("ESolutions.Web.Tests")]
